@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shining JARVIS AI Chatbot</title>
+
+
+<style>
+/* ---------- Base ---------- */
+* {
+  margin: 0; padding: 0; box-sizing: border-box;
+  font-family: 'Orbitron', sans-serif;
+}
+body {
+  height: 100vh;
+  background: radial-gradient(circle at center, #0a0a1f, #000010);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  color: #fff;
+}
+
+/* ---------- Background Glow ---------- */
+.bg-circle {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,255,255,0.2), rgba(255,0,255,0.1) 70%);
+  animation: rotateBg 20s linear infinite, pulseBg 4s ease-in-out infinite;
+}
+
+@keyframes rotateBg {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes pulseBg {
+  0%,100% { transform: scale(1); opacity: 0.3; }
+  50% { transform: scale(1.1); opacity: 0.5; }
+}
+
+/* ---------- Chat Container ---------- */
+.chat-container {
+  position: relative;
+  width: 420px;
+  height: 600px;
+  background: rgba(10, 10, 30, 0.85);
+  border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  backdrop-filter: blur(8px);
+  z-index: 10;
+  border: 3px solid;
+  border-image: linear-gradient(45deg, #00fff9, #ff00ff, #00ff44) 1;
+  box-shadow: 0 0 15px #00fff9, 0 0 15px #ff00ff, 0 0 15px #00ff44;
+  animation: shineBorder 3s linear infinite;
+}
+
+/* ---------- Shining Border Animation ---------- */
+@keyframes shineBorder {
+  0% {
+    box-shadow: 0 0 10px #00fff9, 0 0 10px #ff00ff, 0 0 10px #00ff44;
+    border-image: linear-gradient(45deg, #00fff9, #ff00ff, #00ff44) 1;
+  }
+  50% {
+    box-shadow: 0 0 25px #00fff9, 0 0 25px #ff00ff, 0 0 25px #00ff44;
+    border-image: linear-gradient(45deg, #ff00ff, #00ff44, #00fff9) 1;
+  }
+  100% {
+    box-shadow: 0 0 10px #00fff9, 0 0 10px #ff00ff, 0 0 10px #00ff44;
+    border-image: linear-gradient(45deg, #00fff9, #ff00ff, #00ff44) 1;
+  }
+}
+
+/* ---------- Header ---------- */
+.chat-header {
+  text-align: center;
+  padding: 15px;
+  font-size: 1.4em;
+  letter-spacing: 2px;
+  border-bottom: 2px solid;
+  border-image: linear-gradient(45deg, #00fff9, #ff00ff, #00ff44) 1;
+  text-shadow: 0 0 15px #00fff9, 0 0 10px #ff00ff;
+}
+
+/* ---------- Chat Box ---------- */
+#chat-box {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.message {
+  display: flex;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Chat Bubbles ---------- */
+.user .bubble {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #ff6ec7, #00fff9, #ffed00);
+  border-radius: 12px 12px 0 12px;
+  padding: 10px 15px;
+  color: #000;
+  box-shadow: 0 0 15px #ff6ec7, 0 0 15px #00fff9, 0 0 15px #ffed00;
+}
+
+.bot .bubble {
+  align-self: flex-start;
+  background: linear-gradient(135deg, rgba(255,0,255,0.2), rgba(0,255,255,0.2));
+  border: 1px solid #00fff9;
+  border-radius: 12px 12px 12px 0;
+  padding: 10px 15px;
+  box-shadow: 0 0 10px #ff00ff, 0 0 10px #00fff9;
+  color: #fff;
+}
+
+/* ---------- Input ---------- */
+.input-area {
+  display: flex;
+  border-top: 1px solid;
+  border-image: linear-gradient(45deg, #00fff9, #ff00ff, #00ff44) 1;
+  background: rgba(0,0,20,0.9);
+}
+
+.input-area input {
+  flex: 1;
+  padding: 12px;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #fff;
+  font-size: 1em;
+}
+
+.input-area button {
+  background: linear-gradient(135deg, #ff6ec7, #00fff9, #ffed00);
+  color: #000;
+  border: none;
+  padding: 12px 20px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+  box-shadow: 0 0 10px #ff6ec7, 0 0 10px #00fff9;
+}
+
+.input-area button:hover {
+  box-shadow: 0 0 20px #ff00ff, 0 0 20px #00fff9;
+}
+
+/* ---------- Typing Animation ---------- */
+.typing-dots span {
+  display: inline-block;
+  font-size: 1.5em;
+  color: #ff6ec7;
+  animation: blink 1.2s infinite;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes blink {
+  0%, 80%, 100% { opacity: 0; }
+  40% { opacity: 1; }
+}
+
+/* ---------- Corner Images ---------- */
+.corner-img {
+  position: absolute;
+  width: 160px;
+  opacity: 0.6;
+  filter: drop-shadow(0 0 20px #ff00ff);
+  z-index: 5;
+}
+
+.left-img {
+  bottom: 20px;
+  left: 20px;
+  animation: floatLeft 4s ease-in-out infinite;
+}
+
+.right-img {
+  top: 20px;
+  right: 20px;
+  animation: floatRight 5s ease-in-out infinite;
+}
+
+@keyframes floatLeft {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-15px) rotate(3deg); }
+}
+
+@keyframes floatRight {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(10px) rotate(-3deg); }
+}
+
+/* ---------- Circuit Lines ---------- */
+.circuit-line {
+  position: absolute;
+  width: 2px;
+  height: 100%;
+  background: linear-gradient(transparent, #ff00ff, #00fff9, transparent);
+  opacity: 0.3;
+  animation: moveLine 3s linear infinite;
+}
+
+.circuit-line:nth-child(1) { left: 10%; animation-delay: 0s; }
+.circuit-line:nth-child(2) { left: 30%; animation-delay: 1s; }
+.circuit-line:nth-child(3) { left: 70%; animation-delay: 2s; }
+
+@keyframes moveLine {
+  0% { transform: translateY(100%); }
+  100% { transform: translateY(-100%); }
+}
+</style>
+</head>
+
+<body>
+<!-- Background Elements -->
+<div class="bg-circle"></div>
+<div class="circuit-line"></div>
+<div class="circuit-line"></div>
+<div class="circuit-line"></div>
+
+<!-- Corner Images -->
+<img src="https://cdn-icons-png.flaticon.com/512/4712/4712102.png" alt="AI circuit" class="corner-img left-img">
+<img src="https://cdn-icons-png.flaticon.com/512/4712/4712100.png" alt="AI robot" class="corner-img right-img">
+
+<!-- Chat UI -->
+<div class="chat-container">
+  <div class="chat-header">J.A.R.V.I.S INTERFACE</div>
+
+  <div id="chat-box"></div>
+
+  <div class="input-area">
+    <input id="user-input" type="text" placeholder="Speak your command..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+</div>
+
+<script>
+async function sendMessage() {
+  const input = document.getElementById('user-input');
+  const message = input.value.trim();
+  if (!message) return;
+
+  const chatBox = document.getElementById('chat-box');
+
+  const userMsg = document.createElement('div');
+  userMsg.className = 'message user';
+  userMsg.innerHTML = `<div class="bubble">${message}</div>`;
+  chatBox.appendChild(userMsg);
+  input.value = '';
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  const typing = document.createElement('div');
+  typing.className = 'message bot';
+  typing.innerHTML = `<div class="bubble"><div class="typing-dots"><span>.</span><span>.</span><span>.</span></div></div>`;
+  chatBox.appendChild(typing);
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+  try {
+    const res = await fetch('http://localhost:8080/chat?message=' + encodeURIComponent(message));
+    const data = await res.json();
+    
+    chatBox.removeChild(typing);
+
+    const botMsg = document.createElement('div');
+    botMsg.className = 'message bot';
+    botMsg.innerHTML = `<div class="bubble">${data.reply}</div>`;
+    chatBox.appendChild(botMsg);
+    chatBox.scrollTop = chatBox.scrollHeight;
+  } catch (err) {
+    chatBox.removeChild(typing);
+    const errorMsg = document.createElement('div');
+    errorMsg.className = 'message bot';
+    errorMsg.innerHTML = `<div class="bubble">⚠️ Connection Error: Unable to reach AI core.</div>`;
+    chatBox.appendChild(errorMsg);
+  }
+}
+</script>
+</body>
+</html>
